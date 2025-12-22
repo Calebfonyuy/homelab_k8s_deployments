@@ -1,0 +1,22 @@
+---
+- name: Prepare Nextcloud environment
+  hosts: control_plane
+  vars:
+    project_dir: /home/data
+    nextcloud_user: homelab_admin
+    ansible_user: homelab_admin
+
+  tasks:
+    - name: Create Nextcloud database directory
+      file:
+        path: "{{ project_dir }}/nextcloud/database"
+        state: directory
+        owner: "{{ ansible_user }}"
+        mode: '0755'
+
+    - name: Create Nextcloud files directory
+      file:
+        path: "{{ project_dir }}/nextcloud/files"
+        state: directory
+        owner: "{{ ansible_user }}"
+        mode: '0755'
