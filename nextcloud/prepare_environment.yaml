@@ -12,11 +12,11 @@
         path: "{{ project_dir }}/nextcloud/database"
         state: directory
         owner: "{{ ansible_user }}"
-        mode: '0755'
+        mode: '0766'
 
     - name: Create Nextcloud files directory
       file:
         path: "{{ project_dir }}/nextcloud/files"
         state: directory
         owner: "{{ ansible_user }}"
-        mode: '0755'
+        mode: '0766'
