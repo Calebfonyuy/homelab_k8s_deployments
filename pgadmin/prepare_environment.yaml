@@ -8,7 +8,7 @@
   tasks:
     - name: Create pgAdmin data directory
       file:
-        path: "{{ project_dir }}/pgadmin/data"
+        path: "{{ project_dir }}/pgadmin"
         state: directory
         owner: "{{ ansible_user }}"
         mode: '0766'

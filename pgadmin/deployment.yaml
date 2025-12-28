@@ -18,7 +18,7 @@ spec:
         - name: pgadmin
           image: elestio/pgadmin4:latest
           ports:
-            - containerPort: 80
+            - containerPort: 8080
           env:
             - name: PGADMIN_DEFAULT_EMAIL
               valueFrom:
@@ -40,13 +40,13 @@ spec:
               cpu: 500m
               memory: 512Mi
           volumeMounts:
-            - name: pgadmin-data
-              mountPath: /var/lib/pgadmin
+            - name: pgadmin-servers
+              mountPath: /pgadmin/servers.json
       volumes:
-        - name: pgadmin-data
+        - name: pgadmin-servers
           hostPath:
-            path: /home/data/pgadmin/data
-            type: DirectoryOrCreate
+            path: /home/data/pgadmin/servers.json
+            type: FileOrCreate
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
