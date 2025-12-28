@@ -18,7 +18,7 @@ spec:
         - name: pgadmin
           image: elestio/pgadmin
           ports:
-            - containerPort: 8080
+            - containerPort: 80
           env:
             - name: PGADMIN_DEFAULT_EMAIL
               valueFrom:
