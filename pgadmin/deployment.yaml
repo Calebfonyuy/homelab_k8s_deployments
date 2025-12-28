@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: pgadmin
-          image: elestio/pgadmin4:latest
+          image: elestio/pgadmin
           ports:
             - containerPort: 8080
           env:
