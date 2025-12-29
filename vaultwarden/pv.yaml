@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vaultwarden-pv
+  labels:
+    app: vaultwarden
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /home/data/vaultwarden
+    type: DirectoryOrCreate
+  claimRef:
+    namespace: default
+    name: vaultwarden-pvc

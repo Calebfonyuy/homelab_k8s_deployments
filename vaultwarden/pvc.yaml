@@ -5,6 +5,8 @@ metadata:
   labels:
     app: vaultwarden
 spec:
+  storageClassName: ""
+  volumeName: vaultwarden-pv
   accessModes:
     - ReadWriteOnce
   resources:

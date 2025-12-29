@@ -16,12 +16,13 @@ This project deploys Vaultwarden (a self-hosted Bitwarden-compatible password ma
 | `deployment.yaml` | Deployment configuration |
 | `service.yaml` | NodePort service exposing Vaultwarden on port 30082 |
 | `secret.yaml` | Admin panel token |
-| `pvc.yaml` | PersistentVolumeClaim for data storage |
+| `pv.yaml` | PersistentVolume using hostPath at `/home/data/vaultwarden` |
+| `pvc.yaml` | PersistentVolumeClaim bound to the PV |
 
 ## Prerequisites
 
-1. Kubernetes cluster with a StorageClass configured (for dynamic PV provisioning)
-2. Or a manually created PersistentVolume matching the PVC
+1. Kubernetes cluster
+2. The hostPath directory `/home/data/vaultwarden` will be created automatically on the node
 
 ## Deployment Steps
 
@@ -42,9 +43,10 @@ openssl rand -base64 48
 
 ### 2. Deploy to Kubernetes
 
-Apply in order (PVC first, then secret, deployment, and service):
+Apply in order (PV and PVC first, then secret, deployment, and service):
 
 ```bash
+kubectl apply -f vaultwarden/pv.yaml
 kubectl apply -f vaultwarden/pvc.yaml
 kubectl apply -f vaultwarden/secret.yaml
 kubectl apply -f vaultwarden/deployment.yaml
@@ -60,6 +62,7 @@ kubectl apply -f vaultwarden/
 ### 3. Verify deployment
 
 ```bash
+kubectl get pv vaultwarden-pv
 kubectl get pvc vaultwarden-pvc
 kubectl get pods -l app=vaultwarden
 kubectl get svc vaultwarden
@@ -99,14 +102,9 @@ Common environment variables (add to deployment.yaml):
 
 ## Storage
 
-The PVC uses `ReadWriteOnce` access mode, meaning it can only be mounted by a single node. This is appropriate for Vaultwarden since it uses SQLite and should run as a single replica.
+The PV uses a `hostPath` volume at `/home/data/vaultwarden` on the node. The PVC uses `ReadWriteOnce` access mode, meaning it can only be mounted by a single node. This is appropriate for Vaultwarden since it uses SQLite and should run as a single replica.
 
-To use a specific StorageClass, add to `pvc.yaml`:
-
-```yaml
-spec:
-  storageClassName: your-storage-class
-```
+The `persistentVolumeReclaimPolicy` is set to `Retain`, so data will persist even if the PVC is deleted.
 
 ## Security Recommendations
 
