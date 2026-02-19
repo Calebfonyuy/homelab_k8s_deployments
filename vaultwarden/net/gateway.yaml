@@ -1,0 +1,23 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: vaultwarden-gateway
+spec:
+  gatewayClassName: vaultwarden-gateway-class
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: vaultwarden.home
+      allowedRoutes:
+        namespaces:
+          from: All
+    
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: vaultwarden.home
+      allowedRoutes:
+        namespaces:
+          from: All

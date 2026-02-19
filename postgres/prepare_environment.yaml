@@ -1,0 +1,14 @@
+---
+- name: Prepare PostgreSQL environment
+  hosts: control_plane
+  vars:
+    project_dir: /home/data
+    ansible_user: homelab_admin
+
+  tasks:
+    - name: Create PostgreSQL data directory
+      file:
+        path: "{{ project_dir }}/postgres"
+        state: directory
+        owner: "{{ ansible_user }}"
+        mode: '0766'
