@@ -1,0 +1,67 @@
+# Frontend — Vue 3 SPA built into a static bundle and served by nginx.
+#
+# `VITE_API_BASE_URL`, `VITE_PROJECTION_BASE_URL`, etc. are baked into
+# the bundle at *build* time, so the image must be rebuilt whenever the
+# public hostnames change. See `scripts/build-and-push.sh`.
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: staug
+spec:
+  type: NodePort
+  selector:
+    app: frontend
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 31000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: staug
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: calebfonyuy/staug-frontend:0.1
+          ports:
+            - containerPort: 80
+          env:
+            - name: VITE_API_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: staug-config
+                  key: APP_URL
+            - name: VITE_WS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: staug-config
+                  key: WS_URL
+            - name: VITE_PROJECTION_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: staug-config
+                  key: PROJECTION_URL
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 80
+          #   periodSeconds: 10
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "32Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
