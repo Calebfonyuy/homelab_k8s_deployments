@@ -17,8 +17,8 @@ spec:
   selector:
     app: auth-service
   ports:
-    - port: 8000
-      targetPort: 8000
+    - port: 80
+      targetPort: 80
       nodePort: 31001
 ---
 apiVersion: batch/v1
@@ -35,6 +35,7 @@ spec:
       containers:
         - name: migrate
           image: calebfonyuy/staug-api:0.1
+          imagePullPolicy: Always
           command: ["/bin/sh", "-c"] # TODO: Get rid of the database wipe
           args:
             - |
@@ -76,15 +77,9 @@ spec:
       containers:
         - name: auth
           image: calebfonyuy/staug-api:0.1
-          command:
-            - php
-            - artisan
-            - octane:start
-            - --server=frankenphp
-            - --host=0.0.0.0
-            - --port=8000
+          imagePullPolicy: Always
           ports:
-            - containerPort: 8000
+            - containerPort: 80
           envFrom:
             - configMapRef:
                 name: staug-config
@@ -101,18 +96,18 @@ spec:
                 secretKeyRef:
                   name: staug-secrets
                   key: POSTGRES_PASSWORD
-          # readinessProbe:
-          #   httpGet:
-          #     path: /health
-          #     port: 8000
-          #   periodSeconds: 10
-          #   failureThreshold: 6
-          # livenessProbe:
-          #   httpGet:
-          #     path: /health
-          #     port: 8000
-          #   periodSeconds: 30
-          #   failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            periodSeconds: 10
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            periodSeconds: 30
+            failureThreshold: 3
           resources:
             requests:
               cpu: "200m"

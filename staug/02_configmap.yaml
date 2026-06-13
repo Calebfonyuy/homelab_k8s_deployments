@@ -37,7 +37,7 @@ data:
   MINIO_ENDPOINT: "http://10.0.0.80:31003"
   MINIO_BUCKET: "staugbkt"
   MINIO_REGION: "us-east-1"
-  SONG_SHEET_URL_TTL: "15"
+  SONG_SHEET_URL_TTL: "30"
 
   # ── Upload caps (MB) ──────────────────────────────────────────────
   UPLOAD_IMPORT_MAX_MB: "100"

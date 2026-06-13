@@ -37,6 +37,7 @@ spec:
       containers:
         - name: projection
           image: calebfonyuy/staug-projection:0.1
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           env:
@@ -60,6 +61,11 @@ spec:
                 configMapKeyRef:
                   name: staug-config
                   key: REDIS_PORT
+            - name: AUTH_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: staug-config
+                  key: APP_URL
           readinessProbe:
             httpGet:
               path: /health
